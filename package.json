@@ -1,0 +1,13 @@
+{
+	"name": "mon-vieux-grimoire-backend",
+	"version": "1.0.0",
+	"description": "Backend of Mon vieux grimoire",
+	"main": "index.js",
+	"repository": "https://github.com/MandyTrl/Mon-vieux-grimoire-Backend.git",
+	"author": "MThorel <thorelmandy@gmail.com>",
+	"license": "MIT",
+	"dependencies": {
+		"express": "^4.18.2",
+		"nodemon": "^3.0.2"
+	}
+}
