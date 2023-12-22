@@ -16,7 +16,7 @@ const normalizePort = (val) => {
 }
 
 //utilisation de la fct normalizePort() sur le port de l'environnement ou le port "3000"
-const port = normalizePort(process.env.PORT || '3000')
+const port = normalizePort(process.env.PORT || '4000')
 
 //définit sur quel port l'application Express va tourner
 app.set(port)
