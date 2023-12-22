@@ -55,7 +55,7 @@ server.on('listening', () => {
 	const address = server.address()
 	const serverAddress =
 		typeof address === 'string' ? 'pipe ' + address : 'port ' + port
-	console.log('| Listening on : ' + serverAddress)
+	console.log('| Listening on ' + serverAddress)
 })
 
 //permet au serveur d'écouter les requêtes sur le port normalisé
