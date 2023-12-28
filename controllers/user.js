@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt') //import de bcrypt
 const User = require('../models/user') //import du model "user"
 
 //crée un nouvel utilisateur
@@ -24,12 +24,27 @@ exports.signUp = (req, res) => {
 }
 
 //authentification de l'utilisateur
-exports.addUser = (req, res) => {
-	User.findOne({ _id: req.params.id })
-		.then(() =>
-			res.status(200).json({
-				message: 'Utilisateur authentifié !',
-			})
-		) //récupère la promesse pour afficher le livre sous un format json
-		.catch((error) => res.status(400).json({ error }))
+exports.login = (req, res) => {
+	User.findOne({ email: req.body.email })
+		.then((user) => {
+			if (user === null) {
+				res.status(401).json({ mesage: 'Identifiants de connexion invalides' })
+			} else {
+				bcrypt //on compare avec la méthode ".compare()" de bcrypt le mot de passe reçu dans la requête et celui enregistré dans la BDD
+					.compare(req.body.password, user.password)
+					.then((userFound) => {
+						if (!userFound) {
+							res.status(401).json({ mesage: 'Erreur lors de la connexion' })
+						} else {
+							res.status(200).json({
+								userId: user._id,
+								token: 'TOKEN',
+								message: 'Utilisateur authentifié !',
+							})
+						}
+					})
+					.catch((error) => res.status(500).json({ error }))
+			}
+		})
+		.catch((error) => res.status(500).json({ error })) //on envoie une erreur de serveur car il s'agit d'une erreur concernant les requêtes
 }

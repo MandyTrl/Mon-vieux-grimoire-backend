@@ -6,6 +6,6 @@ const userControllers = require('../controllers/user.js') //export du controller
 router.post('/signup', userControllers.signUp)
 
 //authentification de l'utilisateur
-router.post('/login', userControllers.addUser)
+router.post('/login', userControllers.login)
 
 module.exports = router //export du router
