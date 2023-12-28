@@ -35,10 +35,10 @@ app.use((req, res, next) => {
 app.use(express.json()) //sert à extraire le corps de la requête sous le format "JSON"
 
 //BOOK'S ROUTES ENDPOINT
-app.use('api/books', bookRoutes)
+app.use('/api/books', bookRoutes)
 
 //USER'S ROUTES ENDPOINT
-app.use('api/auth', bookRoutes)
+app.use('/api/auth', userRoutes)
 
 //export de l'application afin qu'elle soit utilisée à travers tous nos fichiers
 module.exports = app
