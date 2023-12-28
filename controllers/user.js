@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt')
 const User = require('../models/user') //import du model "user"
 
 //crée un nouvel utilisateur
@@ -18,6 +19,7 @@ exports.signUp = (req, res) => {
 				)
 				.catch((error) => res.status(400).json({ error }))
 		})
+
 		.catch((error) => res.status(500).json({ error }))
 }
 
