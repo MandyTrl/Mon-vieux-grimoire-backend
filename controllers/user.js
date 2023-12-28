@@ -2,21 +2,23 @@ const User = require('../models/user') //import du model "user"
 
 //crée un nouvel utilisateur
 exports.signUp = (req, res) => {
-	console.log(req.body)
-	const user = new User({
-		...req.body,
-	})
-
-	console.log(user)
-
-	user
-		.save()
-		.then(() =>
-			res.status(201).json({
-				message: 'Nouvel utilisateur ajouté à la BDD !',
+	bcrypt
+		.hash(req.body.password, 10) //hashage du mdp en prenant en paramètre le mdp de la requête et le "salt"
+		.then((hashedPassword) => {
+			const user = new User({
+				email: req.body.email,
+				password: hashedPassword, //on passe le mdp hashé
 			})
-		)
-		.catch((error) => res.status(400).json({ error }))
+			user
+				.save() //enregistre le nouvel user en BDD
+				.then(() =>
+					res.status(201).json({
+						message: 'Utilisateur créé !',
+					})
+				)
+				.catch((error) => res.status(400).json({ error }))
+		})
+		.catch((error) => res.status(500).json({ error }))
 }
 
 //authentification de l'utilisateur
