@@ -1,4 +1,5 @@
-const bcrypt = require('bcrypt') //import de bcrypt
+const bcrypt = require('bcrypt') //import du package bcrypt
+const jwt = require('jsonwebtoken') //import du package jsonwebtoken
 const User = require('../models/user') //import du model "user"
 
 //crée un nouvel utilisateur
@@ -38,7 +39,9 @@ exports.login = (req, res) => {
 						} else {
 							res.status(200).json({
 								userId: user._id,
-								token: 'TOKEN',
+								token: jwt.sign({ user: user._id }, 'RANDOM_TOKEN_SECRET', {
+									expiresIn: '24h',
+								}), //génère un token avec le package "jwt"
 								message: 'Utilisateur authentifié !',
 							})
 						}
