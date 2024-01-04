@@ -1,7 +1,7 @@
 const express = require('express') //import d'express
 const router = express.Router() //création du router avec la méthode ".router()" fournie par Express
-const bookControllers = require('../controllers/book.js') //export du controller "book"
-const authMiddleware = require('../middlewares/auth.js') //export du middleware d'auhtentification
+const bookControllers = require('../controllers/book.js') //import du controller "book"
+const authMiddleware = require('../middlewares/auth.js') //import du middleware d'auhtentification
 
 //ajoute un livre à la BDD - besoin d'être authentifié
 router.post('/', authMiddleware, bookControllers.addBook)
