@@ -2,8 +2,21 @@ const Book = require('../models/book') //import du model "book"
 
 //ajoute un livre à la BDD
 exports.addBook = (req, res) => {
+	const bookFromFront = JSON.parse(req.body) //on parse notre réponse reçue sous format json
+
+	//on supprime les id pour plus de sécurité
+	delete bookFromFront.userId //sera modifié par le token d'authentification
+	delete bookFromFront._id //sera généré par notre BDD
+
+	//création du livre en modifiant le "userId" et l'"imageUrl"
 	const book = new Book({
-		...req.body,
+		...bookFromFront,
+		userId: req.auth.userId, //on assigne le token d'authentification au userId
+		imageUrl: `${req.protocol}://${req.get('host')}/images/${
+			req.file.filename
+			// imageUrl: `${req.protocol}://${req.get('host')}/images/${
+			// req.bodyFromFront.imageUrl
+		}`, //définit la nouvelle url
 	}) //récupère de la requête le "body" pour l'intégrer à un nouveau document "book"
 
 	book

@@ -1,5 +1,7 @@
 const express = require('express') //import d'express
 const mongoose = require('mongoose') //import de Mongoose
+const path = require('path') //import du path de notre server
+const app = express() //création de l'application avec la méthode "express()"
 const bookRoutes = require('./routes/book.js') //import des routes de la collection "books"
 const userRoutes = require('./routes/user.js') //import des routes de la collection "users"
 
@@ -16,9 +18,6 @@ mongoose
 		console.log('| ❌Connexion à la BDD MongoDB @Mon vieux grimoire échouée !')
 	)
 
-//création de l'application avec la méthode "express()"
-const app = express()
-
 app.use((req, res, next) => {
 	res.setHeader('Access-Control-Allow-Origin', '*')
 	res.setHeader(
@@ -33,6 +32,9 @@ app.use((req, res, next) => {
 })
 
 app.use(express.json()) //sert à extraire le corps de la requête sous le format "JSON"
+
+//IMAGE ROUTE ENDPOINT
+app.use('/images', express.static(path.join(__dirname, 'images'))) //Express gére la ressource 'images' de manière statique
 
 //BOOK'S ROUTES ENDPOINT
 app.use('/api/books', bookRoutes)

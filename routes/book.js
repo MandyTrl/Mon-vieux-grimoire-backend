@@ -1,10 +1,16 @@
 const express = require('express') //import d'express
 const router = express.Router() //création du router avec la méthode ".router()" fournie par Express
 const bookControllers = require('../controllers/book.js') //import du controller "book"
-const authMiddleware = require('../middlewares/auth.js') //import du middleware d'auhtentification
+const authMiddleware = require('../middlewares/auth') //import du middleware d'"auhtentification"
+const multerSaveImagesMiddleware = require('../middlewares/multer-config') //import du middleware d'"enregistrement des images" grace à multer
 
-//ajoute un livre à la BDD - besoin d'être authentifié
-router.post('/', authMiddleware, bookControllers.addBook)
+//ajoute un livre à la BDD - auth requise - gestion des enregistrements des images
+router.post(
+	'/',
+	authMiddleware,
+	multerSaveImagesMiddleware,
+	bookControllers.addBook
+)
 
 //récupére tous les livres de la BDD
 router.get('/', bookControllers.getBooks)
@@ -12,13 +18,18 @@ router.get('/', bookControllers.getBooks)
 //récupére un livre
 router.get('/:id', bookControllers.searchBook)
 
-//modifie un livre à la BDD - besoin d'être authentifié
-router.put('/:id', authMiddleware, bookControllers.updateBook)
+//modifie un livre à la BDD - auth requise - gestion des enregistrements des images
+router.put(
+	'/:id',
+	authMiddleware,
+	multerSaveImagesMiddleware,
+	bookControllers.updateBook
+)
 
-//supprime un livre à la BDD - besoin d'être authentifié
+//supprime un livre à la BDD - auth requise
 router.delete('/:id', authMiddleware, bookControllers.deleteBook)
 
-//ajoute une notation à un livre à la BDD - besoin d'être authentifié
+//ajoute une notation à un livre à la BDD - auth requise
 router.put('/:id/rating', authMiddleware, bookControllers.addNotation)
 
 //renvoie le top 3 des livres les mieux évalués
