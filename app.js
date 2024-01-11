@@ -18,6 +18,8 @@ mongoose
 		console.log('| ❌Connexion à la BDD MongoDB @Mon vieux grimoire échouée !')
 	)
 
+app.use(express.json()) // sert à extraire le corps de la requête sous le format "JSON"
+
 app.use((req, res, next) => {
 	res.setHeader('Access-Control-Allow-Origin', '*')
 	res.setHeader(
@@ -30,8 +32,6 @@ app.use((req, res, next) => {
 	)
 	next()
 })
-
-app.use(express.json()) //sert à extraire le corps de la requête sous le format "JSON"
 
 //IMAGE ROUTE ENDPOINT
 app.use('/images', express.static(path.join(__dirname, 'images'))) //Express gére la ressource 'images' de manière statique

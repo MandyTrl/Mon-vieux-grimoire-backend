@@ -2,7 +2,7 @@ const mongoose = require('mongoose') //import de mongoose
 
 //création du schéma d'un livre
 const bookSchema = mongoose.Schema({
-	userId: { type: String, unique: true },
+	userId: { type: String },
 	title: { type: String, required: true },
 	author: { type: String, required: true },
 	imageUrl: { type: String, required: true },
@@ -10,7 +10,7 @@ const bookSchema = mongoose.Schema({
 	genre: { type: String, required: true },
 	ratings: [
 		{
-			userId: { type: String, unique: true, required: true },
+			userId: { type: String, required: true },
 			grade: { type: Number },
 		},
 	],

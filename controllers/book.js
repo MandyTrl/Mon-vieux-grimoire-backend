@@ -1,32 +1,30 @@
 const Book = require('../models/book') //import du model "book"
 
 //ajoute un livre à la BDD
-exports.addBook = (req, res) => {
-	const bookFromFront = JSON.parse(req.body) //on parse notre réponse reçue sous format json
+exports.addBook = async (req, res) => {
+	try {
+		const bookFromFront = JSON.parse(req.body.book) //on parse notre réponse reçue sous format json
 
-	//on supprime les id pour plus de sécurité
-	delete bookFromFront.userId //sera modifié par le token d'authentification
-	delete bookFromFront._id //sera généré par notre BDD
+		delete bookFromFront.userId //sera modifié par le token d'authentification pour plus de sécurité
 
-	//création du livre en modifiant le "userId" et l'"imageUrl"
-	const book = new Book({
-		...bookFromFront,
-		userId: req.auth.userId, //on assigne le token d'authentification au userId
-		imageUrl: `${req.protocol}://${req.get('host')}/images/${
-			req.file.filename
-			// imageUrl: `${req.protocol}://${req.get('host')}/images/${
-			// req.bodyFromFront.imageUrl
-		}`, //définit la nouvelle url
-	}) //récupère de la requête le "body" pour l'intégrer à un nouveau document "book"
+		//création du livre en modifiant le "userId" et l'"imageUrl"
+		const book = new Book({
+			...bookFromFront,
+			userId: req.auth.userId, //on assigne le token d'authentification au userId
+			imageUrl: `${req.protocol}://${req.get('host')}/images/${
+				req.file.filename
+			}`, //définit la nouvelle url
+		})
 
-	book
-		.save() //sauvegarde le livre en BDD
-		.then(() =>
-			res.status(201).json({
-				message: 'Livre ajouté à la BDD !',
-			})
-		)
-		.catch((error) => res.status(400).json({ error }))
+		await book.save() //sauvegarde le livre en BDD
+
+		res.status(201).json({
+			message: 'Livre ajouté à la BDD !',
+		})
+	} catch (error) {
+		console.error('Book (addBook) error : ', error)
+		res.status(400).json({ error })
+	}
 }
 
 //récupére tous les livres de la BDD
