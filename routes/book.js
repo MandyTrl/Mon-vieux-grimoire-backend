@@ -2,6 +2,7 @@ const express = require('express') //import d'express
 const router = express.Router() //création du router avec la méthode ".router()" fournie par Express
 const bookControllers = require('../controllers/book.js') //import du controller "book"
 const authMiddleware = require('../middlewares/auth') //import du middleware d'"auhtentification"
+const resizerImageMiddleware = require('../middlewares/resizing-img.js')
 const multerSaveImagesMiddleware = require('../middlewares/multer-config') //import du middleware d'"enregistrement des images" grace à multer
 
 //ajoute un livre à la BDD - auth requise - gestion des enregistrements des images
@@ -9,6 +10,7 @@ router.post(
 	'/',
 	authMiddleware,
 	multerSaveImagesMiddleware,
+	resizerImageMiddleware,
 	bookControllers.addBook
 )
 
@@ -23,6 +25,7 @@ router.put(
 	'/:id',
 	authMiddleware,
 	multerSaveImagesMiddleware,
+	resizerImageMiddleware,
 	bookControllers.updateBook
 )
 

@@ -6,6 +6,7 @@ const MIME_TYPES = {
 	'image/jpeg': 'jpg',
 	'image/png': 'png',
 	'image/webp': 'webp',
+	'image/avif': 'avif',
 }
 
 const storage = multer.diskStorage({
@@ -20,7 +21,9 @@ const storage = multer.diskStorage({
 		//prend le nom du fichier original en remplaçant les espaces par des "_"
 		const extension = MIME_TYPES[file.mimetype] //récupère le type de fichier reçu en l'associant à l'un de ceux définit plus haut
 
-		callback(null, name + Date.now() + '.' + extension) //définit le nom de fichier qui sera enregistré en BDD "nom du fichier + un timestamp pour le rendre unique + son extension"
+		const imgLink = name + Date.now() + '.' + extension
+
+		callback(null, imgLink) //définit le nom de fichier qui sera enregistré en BDD "nom du fichier + un timestamp pour le rendre unique + son extension"
 	},
 })
 

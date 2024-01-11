@@ -43,18 +43,20 @@ exports.searchBook = (req, res, next) => {
 }
 
 //modifie un livre à la BDD via son "id"
-exports.updateBook = (req, res) => {
+exports.updateBook = (req, res, next) => {
 	//si l'on récupère un fichier alors on parse l'objet en modifiant l'url, sinon on récupère le corps de la requête sans le modifier
 	const bookFromFront = req.file
+	console.log('T E S T', req.file)
 		? {
 				...JSON.parse(req.body.book), //on parse notre réponse reçue sous format json et on définit la nouvelle url
-				imageUrl: `${req.protocol}://${req.get('host')}/images/${
-					req.file.filename
+				imageUrl: `${req.protocol}://${req.get(
+					'host'
+				)}/images/resized-${req.file.filename.replace(/\.[^.]*$/, '')}.webp
 				}`,
 		  }
 		: { ...req.body }
 
-	delete bookFromFront.userId //sera supprime l'userId venant de la requête
+	delete bookFromFront.userId //supprime l'userId venant de la requête - pas besoin d'être mis à jour + sécurité pour ne pas renvoyer un mauvais userId
 
 	Book.findOne({ _id: req.params.id })
 		.then((bookFound) => {
@@ -62,13 +64,19 @@ exports.updateBook = (req, res) => {
 			if (bookFound.userId !== req.auth.userId) {
 				res.status(401).json({ message: 'Non authorisé' })
 			} else {
+				if (req.file) {
+					const filename = bookFound.imageUrl.split('/images/')[1] //récupère le chemin de l'image
+					console.log('@imgUrlFromFront :', filename)
+					fs.unlink(`images/${filename}`) //pour le supprimer
+				}
+
 				Book.updateOne(
 					{ _id: req.params.id },
 					{ ...bookFromFront, _id: req.params.id }
 				)
-					.then(() =>
+					.then(() => {
 						res.status(200).json({ message: 'Le livre a bien été modifié !' })
-					)
+					})
 					.catch((error) => res.status(400).json({ error }))
 			}
 		})
@@ -105,7 +113,7 @@ exports.addNotation = (req, res) => {
 		.then(() =>
 			res
 				.status(200)
-				.json({ message: '✅ La notation a bien été prise en compte !' })
+				.json({ message: 'La notation a bien été prise en compte !' })
 		)
 		.catch((error) => res.status(400).json({ error }))
 }
