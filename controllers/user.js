@@ -35,7 +35,7 @@ exports.login = (req, res) => {
 					.compare(req.body.password, user.password)
 					.then((userFound) => {
 						if (!userFound) {
-							res.status(401).json({ mesage: 'Erreur lors de la connexion' })
+							res.status(401).json({ mesage: '❌ Erreur lors de la connexion' })
 						} else {
 							res.status(200).json({
 								userId: user._id,

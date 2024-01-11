@@ -31,7 +31,7 @@ const errorHandler = (error) => {
 
 	//génère l'adresse du serveur en fonction de s'il reçoit une string ou un port
 	const serverAddress =
-		typeof address === 'string' ? 'pipe ' + address : 'port: ' + por
+		typeof address === 'string' ? 'pipe ' + address : 'port : ' + port
 
 	//gestion des erreurs courantes en fonction du code d'erreur reçu au lancement du serveur
 	switch (error.code) {

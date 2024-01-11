@@ -12,10 +12,10 @@ mongoose
 	)
 
 	.then(() =>
-		console.log('| ✨Connexion à la BDD MongoDB @Mon vieux grimoire réussie !')
+		console.log('✨Connexion à la BDD MongoDB @Mon vieux grimoire réussie !')
 	)
 	.catch(() =>
-		console.log('| ❌Connexion à la BDD MongoDB @Mon vieux grimoire échouée !')
+		console.log('❌Connexion à la BDD MongoDB @Mon vieux grimoire échouée !')
 	)
 
 app.use(express.json()) // sert à extraire le corps de la requête sous le format "JSON"

@@ -5,11 +5,11 @@ const MIME_TYPES = {
 	'image/jpg': 'jpg',
 	'image/jpeg': 'jpg',
 	'image/png': 'png',
+	'image/webp': 'webp',
 }
 
 const storage = multer.diskStorage({
 	destination: (req, file, callback) => {
-		console.log('@middleware image', file)
 		callback(null, 'images') //va enregistrer dans le dossier "images" les images réçues
 	},
 	filename: (req, file, callback) => {
