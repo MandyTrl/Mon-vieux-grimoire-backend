@@ -1,5 +1,6 @@
 const http = require('http') //"require" > cmd pour importer un package, ici; http de node. L'objet http va nous permettre de créer un serveur
 const app = require('./app') //import d'Express
+const chalk = require('chalk') //import de la librairie "chalk" pour la personnalisation des logs
 
 //fct qui renvoie un port valide, qu'il soit fourni sous la forme d'un numéro ou d'une chaîne
 const normalizePort = (val) => {
@@ -54,8 +55,8 @@ server.on('error', errorHandler)
 server.on('listening', () => {
 	const address = server.address()
 	const serverAddress =
-		typeof address === 'string' ? 'pipe ' + address : 'port ' + port
-	console.log('| Listening on ' + serverAddress)
+		typeof address === 'string' ? 'pipe ' + address : `port - ${port} -`
+	console.log(chalk.bold('- Listening on', serverAddress))
 })
 
 //permet au serveur d'écouter les requêtes sur le port normalisé

@@ -1,5 +1,6 @@
 const Book = require('../models/book') //import du model "book"
 const fs = require('fs') //import du module fs de node pour la gestion des fichiers
+const chalk = require('chalk') //import de la librairie "chalk" pour la personnalisation des logs
 
 //ajoute un livre à la BDD
 exports.addBook = async (req, res) => {
@@ -24,7 +25,13 @@ exports.addBook = async (req, res) => {
 		})
 	} catch (error) {
 		res.status(400).json({ error })
-		console.error('Book (addBook) error : ', error)
+		console.error(
+			chalk.bold('|', chalk.red('!'), '|') +
+				'Book ' +
+				chalk.underline('addBook') +
+				' error : ',
+			error
+		)
 	}
 }
 
@@ -68,7 +75,11 @@ exports.updateBook = (req, res, next) => {
 					//pour le supprimer
 					fs.unlink(`images/${oldFileName}`, (error) => {
 						if (error) {
-							console.error("Erreur lors de la suppression de l'image :", error)
+							console.error(
+								chalk.bold('|', chalk.red('!'), '|') +
+									"Erreur lors de la suppression de l'image :",
+								error
+							)
 						}
 						Book.updateOne(
 							{ _id: req.params.id },

@@ -1,6 +1,7 @@
 const sharp = require('sharp') //import du package sharp
 const fs = require('fs').promises //import du module fs de node pour la gestion des fichiers
 const path = require('path') //import du path de notre server
+const chalk = require('chalk') //import de la librairie "chalk" pour la personnalisation des logs
 
 module.exports = async (req, res, next) => {
 	try {
@@ -22,7 +23,8 @@ module.exports = async (req, res, next) => {
 			await fs.unlink(`images/${req.file.filename}`)
 		} catch (error) {
 			console.error(
-				"|!| Le fichier n'existe pas ou n'a pas pu être supprimé :",
+				chalk.bold('|', chalk.red('!'), '|') +
+					" Le fichier n'existe pas ou n'a pas pu être supprimé :",
 				req.file.filename,
 				error.message
 			)

@@ -4,6 +4,7 @@ const path = require('path') //import du path de notre server
 const app = express() //création de l'application avec la méthode "express()"
 const bookRoutes = require('./routes/book.js') //import des routes de la collection "books"
 const userRoutes = require('./routes/user.js') //import des routes de la collection "users"
+const chalk = require('chalk') //import de la librairie "chalk" pour la personnalisation des logs
 
 //connexion à la BDD MongoDB
 mongoose
@@ -12,10 +13,24 @@ mongoose
 	)
 
 	.then(() =>
-		console.log('✨Connexion à la BDD MongoDB @Mon vieux grimoire réussie !')
+		console.log(
+			chalk.bold('✨Connexion ') +
+				'à la BDD MongoDB ' +
+				'@' +
+				chalk.underline('Mon vieux grimoire') +
+				chalk.green(' réussie') +
+				' !'
+		)
 	)
 	.catch(() =>
-		console.log('❌Connexion à la BDD MongoDB @Mon vieux grimoire échouée !')
+		console.log(
+			chalk.bold('❌Connexion ') +
+				'à la BDD MongoDB ' +
+				'@' +
+				chalk.underline('Mon vieux grimoire') +
+				chalk.red(' réussie') +
+				' !'
+		)
 	)
 
 app.use(express.json()) // sert à extraire le corps de la requête sous le format "JSON"
