@@ -12,9 +12,9 @@ exports.addBook = async (req, res) => {
 		const book = new Book({
 			...bookFromFront,
 			userId: req.auth.userId, //on assigne le token d'authentification au userId
-			imageUrl: `${req.protocol}://${req.get('host')}/images/${
-				req.file.filename
-			}`, //définit la nouvelle url
+			imageUrl: `${req.protocol}://${req.get(
+				'host'
+			)}/images/resized-${req.file.filename.replace(/\.[^.]*$/, '')}.webp`, //définit la nouvelle url
 		})
 
 		await book.save() //sauvegarde le livre en BDD
@@ -46,13 +46,11 @@ exports.searchBook = (req, res, next) => {
 exports.updateBook = (req, res, next) => {
 	//si l'on récupère un fichier alors on parse l'objet en modifiant l'url, sinon on récupère le corps de la requête sans le modifier
 	const bookFromFront = req.file
-	console.log('T E S T', req.file)
 		? {
 				...JSON.parse(req.body.book), //on parse notre réponse reçue sous format json et on définit la nouvelle url
 				imageUrl: `${req.protocol}://${req.get(
 					'host'
-				)}/images/resized-${req.file.filename.replace(/\.[^.]*$/, '')}.webp
-				}`,
+				)}/images/resized-${req.file.filename.replace(/\.[^.]*$/, '')}.webp`,
 		  }
 		: { ...req.body }
 
@@ -65,19 +63,34 @@ exports.updateBook = (req, res, next) => {
 				res.status(401).json({ message: 'Non authorisé' })
 			} else {
 				if (req.file) {
-					const filename = bookFound.imageUrl.split('/images/')[1] //récupère le chemin de l'image
-					console.log('@imgUrlFromFront :', filename)
-					fs.unlink(`images/${filename}`) //pour le supprimer
-				}
+					const oldFileName = bookFound.imageUrl.split('/images/')[1] //récupère le chemin de l'image
 
-				Book.updateOne(
-					{ _id: req.params.id },
-					{ ...bookFromFront, _id: req.params.id }
-				)
-					.then(() => {
-						res.status(200).json({ message: 'Le livre a bien été modifié !' })
+					//pour le supprimer
+					fs.unlink(`images/${oldFileName}`, (error) => {
+						if (error) {
+							console.error("Erreur lors de la suppression de l'image :", error)
+						}
+						Book.updateOne(
+							{ _id: req.params.id },
+							{ ...bookFromFront, _id: req.params.id }
+						)
+							.then(() => {
+								res
+									.status(200)
+									.json({ message: 'Le livre a bien été modifié !' })
+							})
+							.catch((error) => res.status(400).json({ error }))
 					})
-					.catch((error) => res.status(400).json({ error }))
+				} else {
+					Book.updateOne(
+						{ _id: req.params.id },
+						{ ...bookFromFront, _id: req.params.id }
+					)
+						.then(() => {
+							res.status(200).json({ message: 'Le livre a bien été modifié !' })
+						})
+						.catch((error) => res.status(400).json({ error }))
+				}
 			}
 		})
 		.catch((error) => res.status(400).json({ error }))

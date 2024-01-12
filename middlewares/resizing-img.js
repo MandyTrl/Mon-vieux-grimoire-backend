@@ -11,18 +11,24 @@ module.exports = async (req, res, next) => {
 		const filename = req.file.filename.replace(/\.[^.]*$/, '')
 		const newFileName = `resized-${filename}.webp`
 
-		console.log('@chemin :', req.file.path)
-		console.log('@nvx chemin :', path.join('images', newFileName))
-
 		await sharp(req.file.path)
 			.resize(824, 1040, 'contain') //dimensions du front
 			.webp({ quality: 80 })
 			.toFile(path.join('images', newFileName))
 
-		//on remplace/supprime le chemin initial par le nvx
-		await fs.unlink(req.file.path)
+		//on remplace/supprime le chemin initial par le nvx seulement s'il existe
+		try {
+			await fs.access(`images/${req.file.filename}`)
+			await fs.unlink(`images/${req.file.filename}`)
+		} catch (error) {
+			console.error(
+				"|!| Le fichier n'existe pas ou n'a pas pu être supprimé :",
+				req.file.filename,
+				error.message
+			)
+		}
 
-		res.status(200).json({ message: 'Image resized' })
+		next()
 	} catch (error) {
 		return res.status(500).json({ error: error.message })
 	}

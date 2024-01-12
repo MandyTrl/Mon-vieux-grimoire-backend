@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
 	filename: (req, file, callback) => {
 		const name = file.originalname
 			.split(' ')
-			.join('_')
+			.join('-')
 			.replace(/\.[^.]*$/, '')
 		//prend le nom du fichier original en remplaçant les espaces par des "_"
 		const extension = MIME_TYPES[file.mimetype] //récupère le type de fichier reçu en l'associant à l'un de ceux définit plus haut
