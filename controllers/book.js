@@ -133,18 +133,32 @@ exports.deleteBook = (req, res) => {
 
 //ajoute une notation à un livre à la BDD via son "id"
 exports.addNotation = (req, res) => {
-	Book.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id })
-		.then(() =>
-			res
-				.status(200)
-				.json({ message: 'La notation a bien été prise en compte !' })
-		)
-		.catch((error) => res.status(400).json({ error }))
+	Book.findOne({ _id: req.params.id }).then((bookFound) => {
+		if (bookFound.userId !== req.auth.userId) {
+			res.status(401).json({ message: 'Non authorisé' })
+		} else {
+			// Ajoute la nouvelle notation au tableau ratings
+			bookFound.ratings.push({
+				userId: req.auth.userId,
+				grade: req.body.ratings.grade,
+			})
+
+			return book.save()
+
+			// .then((book) =>
+			// 	res
+			// 		.status(200)
+			// 		.json({ message: 'La notation a bien été prise en compte !' })
+			// )
+			// .catch((error) => res.status(400).json({ error }))
+		}
+	})
 }
 
 //renvoie le top 3 des livres les mieux évalués
 exports.top3 = (req, res) => {
 	Book.find() //va récupérer tous les livres de la BDD
+		// .then((books) => books.sort )
 		.then((books) => res.status(200).json(books)) //récupère la promesse pour afficher les livres sous un format json
 		.catch((error) => res.status(400).json({ error }))
 }
