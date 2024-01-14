@@ -11,6 +11,7 @@ exports.signUp = (req, res) => {
 				email: req.body.email,
 				password: hashedPassword, //on passe le mdp hashé
 			})
+			console.log('first', user)
 			user
 				.save() //enregistre le nouvel user en BDD
 				.then(() =>
@@ -27,21 +28,25 @@ exports.signUp = (req, res) => {
 //authentification de l'utilisateur
 exports.login = (req, res) => {
 	User.findOne({ email: req.body.email })
-		.then((user) => {
-			if (user === null) {
+		.then((userFound) => {
+			if (userFound === null) {
 				res.status(401).json({ mesage: 'Identifiants de connexion invalides' })
 			} else {
 				bcrypt //on compare avec la méthode ".compare()" de bcrypt le mot de passe reçu dans la requête et celui enregistré dans la BDD
-					.compare(req.body.password, user.password)
-					.then((userFound) => {
+					.compare(req.body.password, userFound.password)
+					.then(() => {
 						if (!userFound) {
-							res.status(401).json({ mesage: '❌ Erreur lors de la connexion' })
+							res.status(401).json({ mesage: 'Erreur lors de la connexion' })
 						} else {
 							res.status(200).json({
-								userId: user._id,
-								token: jwt.sign({ user: user._id }, 'RANDOM_TOKEN_SECRET', {
-									expiresIn: '24h',
-								}), //génère un token avec le package "jwt"
+								userId: userFound._id,
+								token: jwt.sign(
+									{ user: userFound._id },
+									'RANDOM_TOKEN_SECRET',
+									{
+										expiresIn: '24h',
+									}
+								), //génère un token avec le package "jwt"
 								message: 'Utilisateur authentifié !',
 							})
 						}

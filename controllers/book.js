@@ -131,34 +131,52 @@ exports.deleteBook = (req, res) => {
 		.catch((error) => res.status(400).json({ error }))
 }
 
-//ajoute une notation à un livre à la BDD via son "id"
-exports.addNotation = (req, res) => {
-	Book.findOne({ _id: req.params.id }).then((bookFound) => {
-		if (bookFound.userId !== req.auth.userId) {
-			res.status(401).json({ message: 'Non authorisé' })
-		} else {
-			// Ajoute la nouvelle notation au tableau ratings
-			bookFound.ratings.push({
-				userId: req.auth.userId,
-				grade: req.body.ratings.grade,
-			})
+//ajoute une notation à un livre dans la BDD via son "id"
+exports.addRating = (req, res) => {
+	Book.findOne({ _id: req.params.id })
+		.then((bookFound) => {
+			if (
+				bookFound.ratings.some((rating) => rating.userId === req.auth.userId)
+			) {
+				res.status(403).json({ message: 'Vous avez déjà noté ce livre' })
+			} else {
+				//ajoute la nouvelle notation au tableau ratings
+				bookFound.ratings.push({
+					userId: req.auth.userId,
+					grade: req.body.ratings.grade,
+				})
 
-			return book.save()
+				//réinitilisation de la moyenne du livre
+				let sumGrades = 0
 
-			// .then((book) =>
-			// 	res
-			// 		.status(200)
-			// 		.json({ message: 'La notation a bien été prise en compte !' })
-			// )
-			// .catch((error) => res.status(400).json({ error }))
-		}
-	})
+				for (let i = 0; i < bookFound.ratings.length; i++) {
+					let grade = bookFound.ratings[i].grade
+					sumGrades += grade
+				}
+
+				bookFound.averageRating =
+					Math.round((sumGrades / bookFound.ratings.length) * 100) / 100
+
+				return bookFound.save()
+			}
+		})
+		.then(() => {
+			res
+				.status(200)
+				.json({ message: 'La notation a bien été prise en compte !' })
+		})
+		.catch((error) => {
+			res.status(400).json({ error })
+		})
 }
 
 //renvoie le top 3 des livres les mieux évalués
-exports.top3 = (req, res) => {
-	Book.find() //va récupérer tous les livres de la BDD
-		// .then((books) => books.sort )
-		.then((books) => res.status(200).json(books)) //récupère la promesse pour afficher les livres sous un format json
-		.catch((error) => res.status(400).json({ error }))
+exports.getTop3 = (req, res) => {
+	Book.find()
+		.sort({ averageRating: -1 })
+		.limit(3)
+		.then((bestBooks) => res.status(200).json(bestBooks))
+		.catch((error) => {
+			res.status(400).json({ error })
+		})
 }

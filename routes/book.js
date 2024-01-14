@@ -17,6 +17,9 @@ router.post(
 //récupére tous les livres de la BDD
 router.get('/', bookControllers.getBooks)
 
+//renvoie le top 3 des livres les mieux évalués
+router.get('/bestrating', bookControllers.getTop3)
+
 //récupére un livre
 router.get('/:id', bookControllers.searchBook)
 
@@ -33,9 +36,6 @@ router.put(
 router.delete('/:id', authMiddleware, bookControllers.deleteBook)
 
 //ajoute une notation à un livre à la BDD - auth requise
-router.put('/:id/rating', authMiddleware, bookControllers.addNotation)
-
-//renvoie le top 3 des livres les mieux évalués
-router.get('/bestrating', bookControllers.top3)
+router.put('/:id/rating', authMiddleware, bookControllers.addRating)
 
 module.exports = router //export du router
