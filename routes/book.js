@@ -36,6 +36,6 @@ router.put(
 router.delete('/:id', authMiddleware, bookControllers.deleteBook)
 
 //ajoute une notation à un livre à la BDD - auth requise
-router.put('/:id/rating', authMiddleware, bookControllers.addRating)
+router.post('/:id/rating', authMiddleware, bookControllers.addRating)
 
 module.exports = router //export du router

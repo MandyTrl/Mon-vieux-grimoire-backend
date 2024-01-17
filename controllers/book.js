@@ -143,7 +143,7 @@ exports.addRating = (req, res) => {
 				//ajoute la nouvelle notation au tableau ratings
 				bookFound.ratings.push({
 					userId: req.auth.userId,
-					grade: req.body.ratings.grade,
+					grade: req.body.rating,
 				})
 
 				//réinitilisation de la moyenne du livre
@@ -160,10 +160,8 @@ exports.addRating = (req, res) => {
 				return bookFound.save()
 			}
 		})
-		.then(() => {
-			res
-				.status(200)
-				.json({ message: 'La notation a bien été prise en compte !' })
+		.then((bookUpdated) => {
+			res.status(200).json(bookUpdated)
 		})
 		.catch((error) => {
 			res.status(400).json({ error })

@@ -11,7 +11,6 @@ exports.signUp = (req, res) => {
 				email: req.body.email,
 				password: hashedPassword, //on passe le mdp hashé
 			})
-			console.log('first', user)
 			user
 				.save() //enregistre le nouvel user en BDD
 				.then(() =>
