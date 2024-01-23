@@ -6,7 +6,8 @@ const chalk = require('chalk') //import de la librairie "chalk" pour la personna
 module.exports = async (req, res, next) => {
 	try {
 		if (!req.file) {
-			return res.status(400).json({ message: 'file not found' })
+			console.log('no file in the body !')
+			return next()
 		}
 
 		const filename = req.file.filename.replace(/\.[^.]*$/, '')
@@ -24,7 +25,7 @@ module.exports = async (req, res, next) => {
 		} catch (error) {
 			console.error(
 				chalk.bold('|', chalk.red('!'), '|') +
-					" Le fichier n'existe pas ou n'a pas pu être supprimé :",
+					"Le fichier n'existe pas ou n'a pas pu être supprimé :",
 				req.file.filename,
 				error.message
 			)
