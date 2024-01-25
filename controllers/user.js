@@ -1,9 +1,15 @@
 const bcrypt = require('bcrypt') //import du package bcrypt
 const jwt = require('jsonwebtoken') //import du package jsonwebtoken
+const emailValidator = require('email-validator') //import du package email-validator
 const User = require('../models/user') //import du model "user"
 
 //crée un nouvel utilisateur
 exports.signUp = (req, res) => {
+	//on vérifie que le format de l'email est bien valide
+	if (!emailValidator.validate(req.body.email)) {
+		return res.status(400).json({ error: 'Em@il non valide' })
+	}
+
 	bcrypt
 		.hash(req.body.password, 10) //hashage du mdp en prenant en paramètre le mdp de la requête et le "salt"
 		.then((hashedPassword) => {
