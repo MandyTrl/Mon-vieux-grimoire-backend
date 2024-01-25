@@ -9,9 +9,24 @@ const MIME_TYPES = {
 	'image/avif': 'avif',
 }
 
+const allowedExtensions = Object.values(MIME_TYPES)
+
+//vérifie si l'extension de l'image est authorisée
+const validateFile = (file, res, next) => {
+	try {
+		if (allowedExtensions.includes(file.mimetype)) {
+			next()
+		} else {
+			throw new Error('Erreur lors de la saisie des données')
+		}
+	} catch (error) {
+		res.status(400).json(error.message || 'Données invalides')
+	}
+}
+
 const storage = multer.diskStorage({
 	destination: (req, file, callback) => {
-		callback(null, 'images') //va enregistrer dans le dossier "images" les images réçues
+		callback(null, 'images') //va enregistrer dans le dossier "images" les images reçues
 	},
 	filename: (req, file, callback) => {
 		const name = file.originalname
@@ -28,4 +43,4 @@ const storage = multer.diskStorage({
 })
 
 //export du module storage. On indique avec ".single('file')" qu'un seul fichier sera envoyé via l'input 'file'
-module.exports = multer({ storage: storage }).single('image')
+module.exports = [validateFile, multer({ storage: storage }).single('image')]

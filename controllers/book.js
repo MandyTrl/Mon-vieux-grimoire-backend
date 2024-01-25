@@ -67,7 +67,7 @@ exports.updateBook = (req, res, next) => {
 		.then((bookFound) => {
 			//avant de modifier un livre on vérifie si le userId en BDD est différent de celui envoyé par le token dans le corps de la requête
 			if (bookFound.userId !== req.auth.userId) {
-				res.status(401).json({ message: 'Non authorisé' })
+				res.status(403).json({ message: 'Non authorisé' })
 			} else {
 				if (req.file) {
 					const oldFileName = bookFound.imageUrl.split('/images/')[1] //récupère le chemin de l'image
@@ -113,7 +113,7 @@ exports.deleteBook = (req, res) => {
 		.then((bookFound) => {
 			//avant de supprimer un livre on vérifie si le userId en BDD est différent de celui envoyé par le token dans le corps de la requête
 			if (bookFound.userId !== req.auth.userId) {
-				res.status(401).json({ message: 'Non authorisé' })
+				res.status(403).json({ message: 'Non authorisé' })
 			} else {
 				const filename = bookFound.imageUrl.split('/images/')[1] //récupère le chemin de l'image
 
